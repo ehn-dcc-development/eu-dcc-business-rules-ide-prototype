@@ -14,7 +14,7 @@ export const jsonDownloader = (data: unknown, name: string) => () => {
 }
 
 
-export const fileUploadHandler = (handle: (data: string) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
+export const fileUploader = (handle: (data: string) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const {target} = event
     if (target && target.files) {
         const {files} = target
