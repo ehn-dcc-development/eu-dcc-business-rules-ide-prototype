@@ -21,6 +21,7 @@ export const fileUploader = (handle: (data: string) => void) => (event: React.Ch
         if (files.length > 0) {
             files[0].text().then((newData) => {
                 handle(newData)
+                // TODO  remove file? to/or clear file name
             })
         }
     }
