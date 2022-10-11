@@ -25,9 +25,13 @@ The [`build.sh`](./build.sh) builds the TypeScript source code (including ) in t
 In particular, the `dist/index-local.html` can be opened locally, from file.
 The other files can be served from a Web server.
 
-Developing the application can be done conveniently using
+Developing the application can be done conveniently after executing
 
-    npx parcel src/index.html
+    yarn dev
+
+or
+
+    npm run dev
 
 That will start the SPA at URL [`http://localhost:1234/`](http://localhost:1234/).
 
