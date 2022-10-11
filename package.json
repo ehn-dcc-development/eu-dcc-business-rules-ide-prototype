@@ -1,0 +1,19 @@
+{
+  "name": "eu-dcc-business-rules-ide-prototype",
+  "version": "0.1.0",
+  "description": "A prototype for a standalone IDE for business rules",
+  "author": "Meinte Boersma <meinte.boersma@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "parcel": "^2.7.0",
+    "process": "^0.11.10"
+  }
+}

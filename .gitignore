@@ -1,0 +1,10 @@
+# NPM/Yarn:
+/node_modules
+
+# IntelliJ/IDEA:
+/.idea
+
+# Parcel.js:
+/.parcel-cache
+/dist
+
