@@ -10,6 +10,7 @@
     "dev": "rm dist/* && npx parcel src/index.html"
   },
   "dependencies": {
+    "dcc-business-rules-utils": "^0.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

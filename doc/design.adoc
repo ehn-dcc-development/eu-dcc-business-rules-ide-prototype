@@ -1,0 +1,21 @@
+= Design
+
+The Business Rules IDE is used to implement a specification for business rules for the EU DCC.
+A specification consists of:
+
+* a rule set,
+* tests that exercise individual rules of the set, or the set as a whole,
+* metadata - insofar needed.
+
+[NOTE]
+====
+A rule can have one of two types, which govern whether a presented DCC is **acceptable** as follows:
+
+[horizontal]
+Acceptance:: All rules must evaluate to `true`.
+Invalidation:: No rule must evaluate to `true` &hArr; all rules must evaluate to `false`.
+
+Tests of an individual rule should adapt their reporting on the rule's type.
+Rule set-level tests should either target all (applicable) Acceptance (x-)or Invalidation rules.
+====
+
