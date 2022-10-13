@@ -1,8 +1,9 @@
 import React from "react"
 import {Rule} from "dcc-business-rules-utils"
+import {action} from "mobx"
 import {observer} from "mobx-react"
 
-import {IDEState} from "./state"
+import {IDEState, storeSpec} from "./state"
 import {defaultSpecification, Specification} from "../spec/type-defs"
 import {fileUploader, jsonDownloader} from "../utils/dom"
 import {asPrettyJson, parseJson} from "../utils/json"
@@ -16,11 +17,12 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
     }
     // TODO  show spinner?
 
-    const confirmAndSaveSpec = (newSpec: Specification) => {
+    const confirmAndSaveSpec = action((newSpec: Specification) => {
         if (confirm("Are you sure you want to initialize the business rules specification? (You might want to download the current one first.)")) {
-            state.saveSpec(newSpec)
+            state.specification = newSpec
+            storeSpec()
         }
-    }
+    })
 
     return <>
         <h1>Business rules IDE</h1>
@@ -36,9 +38,10 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
                     <label htmlFor="business-rules-file-upload">Upload a business rules specification JSON file (overwriting current specification):&nbsp;</label>
                     <input
                         type="file" id="business-rules-file-upload" accept=".json"
-                        onChange={fileUploader((name, newData, index) => {
-                            if (index === 0) {  // ignore all uploads except the first
-                                const newSpec = parseJson(newData)
+                        onChange={fileUploader((fileUploads) => {
+                            if (fileUploads.length > 0) {
+                                // ignore all uploads except the first:
+                                const newSpec = parseJson(fileUploads[0].contents)
                                 if (newSpec instanceof SyntaxError) {
                                     alert(`The uploaded file is not a valid business rules specification JSON file.`)
                                 } else {
@@ -64,9 +67,10 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
                     <label htmlFor="import-file-upload">Upload a </label>
                     <input
                         type="file" id="import-file-upload" accept=".json" multiple
-                        onChange={fileUploader((name, newData) => {
-                            state.addRule(parseJson(newData) as Rule)
-                        })}
+                        onChange={action(fileUploader((files) => {
+                            state.specification!.rules.push(...files.map(({ contents }) => parseJson(contents) as Rule))
+                            storeSpec()
+                        }))}
                     />
                 </div>
 

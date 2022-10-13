@@ -1,4 +1,3 @@
-import {Rule} from "dcc-business-rules-utils"
 import {action, observable} from "mobx"
 
 import {storeData, storedData} from "./persistence"
@@ -9,21 +8,18 @@ import {asMinimalJson, parseJson} from "../utils/json"
 export type IDEState = {
     storageIsMalformed?: boolean
     specification?: Specification
-    saveSpec: (newSpec: Specification) => void
-    addRule: (newRule: Rule) => void
 }
 
 
 export const ideState: IDEState = observable({
     storageIsMalformed: undefined,
-    specification: undefined,
-    // placeholder implementations:
-    saveSpec: (_) => {},
-    addRule: (_: Rule) => {}
+    specification: undefined
 })
 
-const storeSpec = () => {
-    storeData(asMinimalJson(ideState.specification))
+export const storeSpec = () => {
+    if (ideState.specification) {
+        storeData(asMinimalJson(ideState.specification))
+    }
 }
 
 
@@ -37,13 +33,5 @@ export const initializeFromStorage = action(() => {
                 ? defaultSpecification
                 : specFromStorage as Specification
         )
-    ideState.saveSpec = (newSpec) => {
-        ideState.specification = newSpec
-        storeSpec()
-    }
-    ideState.addRule = (newRule) => {
-        ideState.specification!.rules.push(newRule)
-        storeSpec()
-    }
 })
 

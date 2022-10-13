@@ -14,34 +14,30 @@ export const jsonDownloader = (data: unknown, name: string) => () => {
 }
 
 
-export type FileUploadHandler = (name: string, data: string, index: number) => void
+export type FileUpload = {
+    name: string
+    contents: string
+}
 
-export const fileUploader = (handle: FileUploadHandler/*, finish?: () => void*/) => (event: React.ChangeEvent<HTMLInputElement>) => {
+export type FileUploadHandler = (fileUploads: FileUpload[]) => void
+
+export const fileUploader = (handle: FileUploadHandler) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const {target} = event
     if (target && target.files) {
         const {files} = target
-        if (files.length > 0) {
-            files[0].text().then((contents) => {
-                handle(files[0].name, contents, 0)
-            })
-        }
-        // TODO  make multi-upload work again
-        /*
-        -- attempt to handle multiple files at once - doesn't trigger re-rendering properly --:
         Promise.all(
             [...Array(files.length).keys()]
                 .map((i) => files[i])
-                .map((file, i) =>
-                    file.text().then((contents) => {
-                        handle(file.name, contents, i)
-                    })
+                .map((file) =>
+                    file.text().then((contents) => Promise.resolve({
+                        name: file.name,
+                        contents
+                    }))
                 )
-        ).then(() => {
-            if (finish) {
-                finish()
-            }
-        })
-         */
+        )
+            .then((files) => {
+                handle(files)
+            })
         // TODO  clear file name; the following doesn't work:
         // event.target.value = ""
     }
