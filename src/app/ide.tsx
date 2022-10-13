@@ -3,13 +3,19 @@ import {Rule} from "dcc-business-rules-utils"
 import {action} from "mobx"
 import {observer} from "mobx-react"
 
-import {IDEState, storeSpec} from "./state"
+import {ideState, IDEState, storeSpec} from "./state"
+import {Outline} from "../spec/outline"
+import {RuleComponent} from "../spec/rule"
 import {defaultSpecification, Specification} from "../spec/type-defs"
-import {fileUploader, jsonDownloader} from "../utils/dom"
-import {asPrettyJson, parseJson} from "../utils/json"
+import {fileUploader, jsonDownloader} from "../utils/file"
+import {parseJson} from "../utils/json"
 
 
-export const IDE = observer(({ state }: { state: IDEState }) => {
+export type IDEProps = {
+    state: IDEState
+}
+
+export const IDE = observer(({state}: IDEProps) => {
     if (state.specification === undefined) {
         return <>
             <span>Loading...</span>
@@ -35,9 +41,9 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
             <span>Destructive actions on business rules specification:</span>
             <ul>
                 <li>
-                    <label htmlFor="business-rules-file-upload">Upload a business rules specification JSON file (overwriting current specification):&nbsp;</label>
+                    <label htmlFor="business-rules-spec-file-upload">Upload a business rules specification JSON file (overwriting current specification):&nbsp;</label>
                     <input
-                        type="file" id="business-rules-file-upload" accept=".json"
+                        id="business-rules-spec-file-upload" type="file" accept=".json"
                         onChange={fileUploader((fileUploads) => {
                             if (fileUploads.length > 0) {
                                 // ignore all uploads except the first:
@@ -52,6 +58,10 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
                     />
                 </li>
                 <li>
+                    <span>Download the business rules' specification as a JSON file:&nbsp;</span>
+                    <button onClick={jsonDownloader(state.specification, "rules.json")}>Download</button>
+                </li>
+                <li>
                     <button onClick={() => { confirmAndSaveSpec(defaultSpecification) }}>Initialize</button>
                     <span>&nbsp;business rules specification</span>
                 </li>
@@ -61,30 +71,30 @@ export const IDE = observer(({ state }: { state: IDEState }) => {
 
         {state.storageIsMalformed ||
             <>
-                <h2>Import</h2>
+                <h2>Specification</h2>
 
                 <div>
-                    <label htmlFor="import-file-upload">Upload a </label>
+                    <label htmlFor="import-rule-file-upload">Import a rule:&nbsp;</label>
                     <input
-                        type="file" id="import-file-upload" accept=".json" multiple
+                        id="import-rule-file-upload" type="file" accept=".json" multiple
                         onChange={action(fileUploader((files) => {
-                            state.specification!.rules.push(...files.map(({ contents }) => parseJson(contents) as Rule))
+                            state.specification!.rules.push(...files.map(({contents}) => parseJson(contents) as Rule))
                             storeSpec()
                         }))}
                     />
                 </div>
 
+                <h3>Outline</h3>
 
-                <h2>Specification</h2>
+                <Outline specification={state.specification} selectedRule={state.selectedRule} selectRule={(rule) => {
+                    ideState.selectedRule = rule
+                }} />
 
-                <div>
-                    <span>Download the business rules' specification as a JSON file:&nbsp;</span>
-                    <button onClick={jsonDownloader(state.specification, "rules.json")}>Download</button>
-                </div>
-                <div>
-                    <span>Current business rules specification:</span>
-                    <pre>{asPrettyJson(state.specification)}</pre>
-                </div>
+                {state.selectedRule && <>
+                    <h3>Rule</h3>
+                    <RuleComponent rule={state.selectedRule} />
+                </>}
+
             </>
         }
 

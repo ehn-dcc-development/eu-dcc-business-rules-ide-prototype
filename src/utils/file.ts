@@ -1,5 +1,6 @@
 import React from "react"
 
+import {range} from "./functional"
 import {asPrettyJson} from "./json"
 
 
@@ -26,7 +27,7 @@ export const fileUploader = (handle: FileUploadHandler) => (event: React.ChangeE
     if (target && target.files) {
         const {files} = target
         Promise.all(
-            [...Array(files.length).keys()]
+            range(files.length)
                 .map((i) => files[i])
                 .map((file) =>
                     file.text().then((contents) => Promise.resolve({

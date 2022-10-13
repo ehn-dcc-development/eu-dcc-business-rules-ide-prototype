@@ -8,3 +8,37 @@ body {
     font-weight: bold;
 }
 
+
+div.outline {
+    width: 25%;
+    border: 1px solid black;
+}
+
+div.outline div.header {
+    border: 1px solid gray;
+    font-weight: bold;
+}
+
+div.rule span.symbols {
+    margin-left: 3pt;
+    margin-right: 3pt;
+}
+
+div.rule span.identifier {
+    font-style: italic;
+}
+
+div.rule span.version {
+    font-size: 10pt;
+    color: gray;
+    font-weight: bold;
+}
+
+div.rule.selected {
+    background-color: orange;
+}
+
+pre {
+    font-size: 8pt;
+}
+
