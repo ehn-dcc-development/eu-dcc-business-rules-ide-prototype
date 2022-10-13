@@ -25,6 +25,7 @@ export const fileUploader = (handle: FileUploadHandler/*, finish?: () => void*/)
                 handle(files[0].name, contents, 0)
             })
         }
+        // TODO  make multi-upload work again
         /*
         -- attempt to handle multiple files at once - doesn't trigger re-rendering properly --:
         Promise.all(

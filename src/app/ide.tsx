@@ -1,41 +1,34 @@
-import React, {useState} from "react"
+import React from "react"
 import {Rule} from "dcc-business-rules-utils"
+import {observer} from "mobx-react"
 
-import {fileUploader, jsonDownloader} from "../utils/dom"
-import {asMinimalJson, asPrettyJson, parseJson} from "../utils/json"
-import {storeData, storedData} from "./persistence"
+import {IDEState} from "./state"
 import {defaultSpecification, Specification} from "../spec/type-defs"
+import {fileUploader, jsonDownloader} from "../utils/dom"
+import {asPrettyJson, parseJson} from "../utils/json"
 
 
-export const App = () => {
-    // use a React hook to make the app reactive in stored data:
-    const [specFromStorage, setSpecInStorage] = useState(parseJson(storedData()))
-
-    // TODO  1. validate, and raise an error if it doesn't
-    //       2. migrate when necessary
-    //  (This flow should be executed after loading a local file as well.)
-    const specFromStorageNotJson = specFromStorage instanceof SyntaxError
-    const specification: Specification = (specFromStorageNotJson || specFromStorage !== null)
-        ? (specFromStorage as Specification)
-        : defaultSpecification
-    const saveSpec = (newSpec: Specification) => {
-        storeData(asMinimalJson(newSpec))
-        setSpecInStorage(newSpec)
+export const IDE = observer(({ state }: { state: IDEState }) => {
+    if (state.specification === undefined) {
+        return <>
+            <span>Loading...</span>
+        </>
     }
-    const addRule = (newRule: Rule) => {
-        specification.rules.push(newRule)
-        setSpecInStorage((prevSpec: Specification) => ({
-            rules: [...prevSpec.rules, newRule]
-        }))
+    // TODO  show spinner?
+
+    const confirmAndSaveSpec = (newSpec: Specification) => {
+        if (confirm("Are you sure you want to initialize the business rules specification? (You might want to download the current one first.)")) {
+            state.saveSpec(newSpec)
+        }
     }
 
     return <>
         <h1>Business rules IDE</h1>
 
+
         <h2>Specification persistence</h2>
-        {specFromStorageNotJson &&
+        {state.storageIsMalformed &&
             <div><span className="error">Error: persisted business rules specification is erroneous - please upload a valid JSON file.</span></div>}
-        {/* TODO  add possibility to see and possibly fix the BR JSON contents */}
         <div>
             <span>Destructive actions on business rules specification:</span>
             <ul>
@@ -45,34 +38,34 @@ export const App = () => {
                         type="file" id="business-rules-file-upload" accept=".json"
                         onChange={fileUploader((name, newData, index) => {
                             if (index === 0) {  // ignore all uploads except the first
-                                // TODO  if data from storage is valid, have user confirm overwriting
-                                saveSpec(parseJson(newData) as Specification)
+                                const newSpec = parseJson(newData)
+                                if (newSpec instanceof SyntaxError) {
+                                    alert(`The uploaded file is not a valid business rules specification JSON file.`)
+                                } else {
+                                    confirmAndSaveSpec(newSpec as Specification)
+                                }
                             }
                         })}
                     />
                 </li>
                 <li>
-                    <button onClick={() => {
-                        if (confirm("Are you sure you want to initialize the business rules specification? (You might want to download the current one first.)")) {
-                            saveSpec(defaultSpecification)
-                        }
-                    }}>Initialize</button>
+                    <button onClick={() => { confirmAndSaveSpec(defaultSpecification) }}>Initialize</button>
                     <span>&nbsp;business rules specification</span>
                 </li>
             </ul>
         </div>
 
 
-        {specFromStorageNotJson ||
+        {state.storageIsMalformed ||
             <>
                 <h2>Import</h2>
 
                 <div>
                     <label htmlFor="import-file-upload">Upload a </label>
                     <input
-                        type="file" id="import-file-upload" accept=".json" //multiple
+                        type="file" id="import-file-upload" accept=".json" multiple
                         onChange={fileUploader((name, newData) => {
-                            addRule(parseJson(newData) as Rule)
+                            state.addRule(parseJson(newData) as Rule)
                         })}
                     />
                 </div>
@@ -82,11 +75,11 @@ export const App = () => {
 
                 <div>
                     <span>Download the business rules' specification as a JSON file:&nbsp;</span>
-                    <button onClick={jsonDownloader(specification, "rules.json")}>Download</button>
+                    <button onClick={jsonDownloader(state.specification, "rules.json")}>Download</button>
                 </div>
                 <div>
                     <span>Current business rules specification:</span>
-                    <pre>{asPrettyJson(specification)}</pre>
+                    <pre>{asPrettyJson(state.specification)}</pre>
                 </div>
             </>
         }
@@ -99,5 +92,5 @@ export const App = () => {
             as part of the <a href="https://ec.europa.eu/info/live-work-travel-eu/coronavirus-response/safe-covid-19-vaccines-europeans/eu-digital-covid-certificate_en">EU Digital COVID Certificate effort</a>.
         </p>
     </>
-}
+})
 

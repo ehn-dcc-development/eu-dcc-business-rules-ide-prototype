@@ -1,12 +1,16 @@
 import React from "react"
 import {createRoot} from "react-dom/client"
-import {App} from "./spa/app"
+
+import {IDE} from "./app/ide"
+import {ideState, initializeFromStorage} from "./app/state"
 
 
 require("./styling.css")
 
 
-const container = document.getElementById("app")
+initializeFromStorage()
+
+const container = document.getElementById("ide")
 const root = createRoot(container!)
-root.render(<App />)
+root.render(<IDE state={ideState} />)
 
