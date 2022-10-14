@@ -3,7 +3,6 @@ import {observer} from "mobx-react"
 import {parseRuleId, Rule} from "dcc-business-rules-utils"
 
 import {Specification} from "./type-defs"
-import {asClassName} from "../utils/css"
 import {groupBy, Hash} from "../utils/functional"
 import {flagEmoji} from "../utils/string"
 
@@ -20,25 +19,28 @@ export const Outline = observer(({specification, selectedRule, selectRule}: Outl
         (rule) => rule.Type
     )
 
+    const SelectableRules = ({rules}: { rules: Rule[] | undefined }) =>
+        <div className="rules">
+            {(rules || [])
+                .map((rule, index) =>
+                    <div
+                        className={rule === selectedRule ? "selected-rule" : ""}
+                        onClick={(_) => {
+                            selectRule(rule)
+                        }}
+                        key={index}
+                    >
+                        <RuleLine rule={rule} />
+                    </div>
+                )
+            }
+        </div>
+
     return <div className="outline">
         <div className="header"><span>Acceptance</span></div>
-        <div className="rules">
-            {(rulesPerType["Acceptance"] || [])
-                .map((rule, index) =>
-                    <RuleInOutline rule={rule} isSelected={rule === selectedRule} select={() => {
-                        selectRule(rule)
-                    }} key={index} />)
-            }
-        </div>
+        <SelectableRules rules={rulesPerType["Acceptance"]} />
         <div className="header"><span>Invalidation</span></div>
-        <div className="rules">
-            {(rulesPerType["Invalidation"] || [])
-                .map((rule, index) =>
-                    <RuleInOutline rule={rule} isSelected={rule === selectedRule} select={() => {
-                        selectRule(rule)
-                    }} key={index} />)
-            }
-        </div>
+        <SelectableRules rules={rulesPerType["Invalidation"]} />
     </div>
 })
 
@@ -51,17 +53,13 @@ const certificateType2emoji: Hash<string> = {
 }
 
 
-type RuleInOutlineProps = {
-    rule: Rule,
-    isSelected: boolean,
-    select: () => void
+export type RuleLineProps = {
+    rule: Rule
 }
 
-const RuleInOutline = observer(({rule, isSelected, select}: RuleInOutlineProps) => {
+export const RuleLine = observer(({rule}: RuleLineProps) => {
     const {country, type} = parseRuleId(rule.Identifier)
-    return <div className={asClassName("rule", isSelected && "selected")} onClick={(_) => {
-        select()
-    }}>
+    return <div className="rule-line">
         <span className="symbols">{certificateType2emoji[type]} {flagEmoji(country)}</span>
         <span className="identifier">{rule.Identifier}&nbsp;</span>
         <span className="version">{rule.Version}</span>

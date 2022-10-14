@@ -19,26 +19,35 @@ div.outline div.header {
     font-weight: bold;
 }
 
-div.rule span.symbols {
+div.rule-line {
+    display: inline-block;
+}
+
+div.rule-line span.symbols {
     margin-left: 3pt;
     margin-right: 3pt;
 }
 
-div.rule span.identifier {
+div.rule-line span.identifier {
     font-style: italic;
 }
 
-div.rule span.version {
+span.version {
     font-size: 10pt;
     color: gray;
     font-weight: bold;
 }
 
-div.rule.selected {
+div.selected-rule {
     background-color: orange;
 }
 
+
 pre {
     font-size: 8pt;
+}
+
+span.tt {
+    font-family: monospace;
 }
 
