@@ -6,7 +6,7 @@ import {Rule} from "dcc-business-rules-utils"
 import {RuleLine} from "./outline"
 
 
-require("./Certlogic-styling.css")
+require("certlogic-html/dist/styling.css")
 
 
 export type RuleComponentProps = {

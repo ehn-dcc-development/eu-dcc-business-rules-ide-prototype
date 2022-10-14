@@ -7,7 +7,7 @@
   "private": true,
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "dev": "rm dist/* && npx parcel src/index.html"
+    "dev": "rm -f dist/* && npx parcel src/index.html"
   },
   "dependencies": {
     "certlogic-html": "^0.3.1",
