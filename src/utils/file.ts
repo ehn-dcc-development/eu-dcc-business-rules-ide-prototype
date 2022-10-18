@@ -44,3 +44,9 @@ export const fileUploader = (handle: FileUploadHandler) => (event: React.ChangeE
     }
 }
 
+
+export const withoutFileExtension = (fileName: string): string => {
+    const extStart = fileName.lastIndexOf(".")
+    return extStart === -1 ? fileName : fileName.substring(0, extStart)
+}
+

@@ -3,7 +3,7 @@ import {Rule} from "dcc-business-rules-utils"
 import {action} from "mobx"
 import {observer} from "mobx-react"
 
-import {ideState, IDEState, storeSpec} from "./state"
+import {IDEState, storeSpec} from "./state"
 import {Outline} from "../spec/outline"
 import {RuleComponent} from "../spec/rule"
 import {defaultSpecification, Specification} from "../spec/type-defs"
@@ -52,6 +52,7 @@ export const IDE = observer(({state}: IDEProps) => {
                                     alert(`The uploaded file is not a valid business rules specification JSON file.`)
                                 } else {
                                     confirmAndSaveSpec(newSpec as Specification)
+                                        // TODO  verify cast
                                 }
                             }
                         })}
@@ -79,6 +80,7 @@ export const IDE = observer(({state}: IDEProps) => {
                         id="import-rule-file-upload" type="file" accept=".json" multiple
                         onChange={action(fileUploader((files) => {
                             state.specification!.rules.push(...files.map(({contents}) => parseJson(contents) as Rule))
+                                // TODO  verify cast
                             storeSpec()
                         }))}
                     />
@@ -86,9 +88,9 @@ export const IDE = observer(({state}: IDEProps) => {
 
                 <h3>Outline</h3>
 
-                <Outline specification={state.specification} selectedRule={state.selectedRule} selectRule={(rule) => {
-                    ideState.selectedRule = rule
-                }} />
+                <Outline specification={state.specification} selectedRule={state.selectedRule} selectRule={action((rule) => {
+                    state.selectedRule = rule
+                })} />
 
                 {state.selectedRule && <>
                     <h3>Rule</h3>

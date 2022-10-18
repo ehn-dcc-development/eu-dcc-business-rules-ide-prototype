@@ -36,6 +36,7 @@ export const initializeFromStorage = action(() => {
         : (specFromStorage === null
                 ? defaultSpecification
                 : specFromStorage as Specification
+                    // TODO  verify cast
         )
 })
 

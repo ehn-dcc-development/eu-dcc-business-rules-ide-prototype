@@ -20,7 +20,7 @@ div.outline div.header {
 }
 
 div.rule-line {
-    display: inline-block;
+    display: block;
 }
 
 div.rule-line span.symbols {
@@ -49,5 +49,11 @@ pre {
 
 span.tt {
     font-family: monospace;
+}
+
+
+span.test-result {
+    float: right;
+    margin-right: 0.25rem;
 }
 

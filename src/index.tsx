@@ -9,6 +9,11 @@ require("./styling.css")
 
 
 initializeFromStorage()
+// migrate:
+const {specification} = ideState
+if (specification !== undefined && specification.ruleTestsById === undefined) {
+    specification.ruleTestsById = {}
+}
 
 const container = document.getElementById("ide")
 const root = createRoot(container!)

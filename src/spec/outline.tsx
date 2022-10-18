@@ -63,6 +63,7 @@ export const RuleLine = observer(({rule}: RuleLineProps) => {
         <span className="symbols">{certificateType2emoji[type]} {flagEmoji(country)}</span>
         <span className="identifier">{rule.Identifier}&nbsp;</span>
         <span className="version">{rule.Version}</span>
+        <span className="test-result">xxx</span>
     </div>
 })
 
