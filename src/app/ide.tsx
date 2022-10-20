@@ -34,42 +34,6 @@ export const IDE = observer(({state}: IDEProps) => {
         <h1>Business rules IDE</h1>
 
 
-        <h2>Specification persistence</h2>
-        {state.storageIsMalformed &&
-            <div><span className="error">Error: persisted business rules specification is erroneous - please upload a valid JSON file.</span></div>}
-        <div>
-            <span>Destructive actions on business rules specification:</span>
-            <ul>
-                <li>
-                    <label htmlFor="business-rules-spec-file-upload">Upload a business rules specification JSON file (overwriting current specification):&nbsp;</label>
-                    <input
-                        id="business-rules-spec-file-upload" type="file" accept=".json"
-                        onChange={fileUploader((fileUploads) => {
-                            if (fileUploads.length > 0) {
-                                // ignore all uploads except the first:
-                                const newSpec = parseJson(fileUploads[0].contents)
-                                if (newSpec instanceof SyntaxError) {
-                                    alert(`The uploaded file is not a valid business rules specification JSON file.`)
-                                } else {
-                                    confirmAndSaveSpec(newSpec as Specification)
-                                        // TODO  verify cast
-                                }
-                            }
-                        })}
-                    />
-                </li>
-                <li>
-                    <span>Download the business rules' specification as a JSON file:&nbsp;</span>
-                    <button onClick={jsonDownloader(state.specification, "rules.json")}>Download</button>
-                </li>
-                <li>
-                    <button onClick={() => { confirmAndSaveSpec(defaultSpecification) }}>Initialize</button>
-                    <span>&nbsp;business rules specification</span>
-                </li>
-            </ul>
-        </div>
-
-
         {state.storageIsMalformed ||
             <>
                 <h2>Specification</h2>
@@ -121,6 +85,42 @@ export const IDE = observer(({state}: IDEProps) => {
 
             </>
         }
+
+
+        <h2>Specification persistence</h2>
+        {state.storageIsMalformed &&
+            <div><span className="error">Error: persisted business rules specification is erroneous - please upload a valid JSON file.</span></div>}
+        <div>
+            <span>Destructive actions on business rules specification:</span>
+            <ul>
+                <li>
+                    <label htmlFor="business-rules-spec-file-upload">Upload a business rules specification JSON file (overwriting current specification):&nbsp;</label>
+                    <input
+                        id="business-rules-spec-file-upload" type="file" accept=".json"
+                        onChange={fileUploader((fileUploads) => {
+                            if (fileUploads.length > 0) {
+                                // ignore all uploads except the first:
+                                const newSpec = parseJson(fileUploads[0].contents)
+                                if (newSpec instanceof SyntaxError) {
+                                    alert(`The uploaded file is not a valid business rules specification JSON file.`)
+                                } else {
+                                    confirmAndSaveSpec(newSpec as Specification)
+                                    // TODO  verify cast
+                                }
+                            }
+                        })}
+                    />
+                </li>
+                <li>
+                    <span>Download the business rules' specification as a JSON file:&nbsp;</span>
+                    <button onClick={jsonDownloader(state.specification, "rules.json")}>Download</button>
+                </li>
+                <li>
+                    <button onClick={() => { confirmAndSaveSpec(defaultSpecification) }}>Initialize</button>
+                    <span>&nbsp;business rules specification</span>
+                </li>
+            </ul>
+        </div>
 
 
         <h2>Colophon</h2>
