@@ -7,4 +7,5 @@
 # Parcel.js:
 /.parcel-cache
 /dist
+/build
 

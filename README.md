@@ -4,6 +4,7 @@
 
 This repository holds a prototype for an IDE for business rules.
 This IDE can be run (from) anywhere in a modern browser.
+A deployed version of the IDE can be found at: https://eu-dcc-business-rules-ide-prototype.vercel.app/
 
 Technically, it consists of only a SPA frontend, which relies on the browser's `localStorage`, and loading from/saving to a local file system.
 This avoids needing to host a backend, including persistence, etc.

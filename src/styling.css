@@ -2,3 +2,72 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12pt;
 }
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+
+div.outline {
+    width: 25%;
+    border: 1px solid black;
+}
+
+div.outline div.header {
+    border: 1px solid gray;
+    font-weight: bold;
+}
+
+div.rule-line {
+    display: block;
+}
+
+div.rule-line span.symbols {
+    margin-left: 3pt;
+    margin-right: 3pt;
+}
+
+div.rule-line span.identifier {
+    font-style: italic;
+}
+
+span.version {
+    font-size: 10pt;
+    color: gray;
+    font-weight: bold;
+}
+
+div.selected-rule {
+    background-color: orange;
+}
+
+
+pre {
+    font-size: 8pt;
+}
+
+span.tt {
+    font-family: monospace;
+}
+
+
+span.test-result {
+    float: right;
+    margin-right: 0.25rem;
+    width: 2em;
+}
+
+.test-result.success {
+    background-color: lightgreen;
+}
+.test-result.failure {
+    background-color: red;
+}
+.test-result.error {
+    background-color: darkred;
+}
+.test-result.noTests {
+    background-color: lightskyblue;
+}
+

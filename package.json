@@ -7,9 +7,13 @@
   "private": true,
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "dev": "npx parcel src/index.html"
+    "dev": "rm -f dist/* && npx parcel src/index.html"
   },
   "dependencies": {
+    "certlogic-html": "^0.3.1",
+    "dcc-business-rules-utils": "^0.5.1",
+    "mobx": "^6.6.2",
+    "mobx-react": "^7.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -17,6 +21,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "parcel": "^2.7.0",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "typescript": "^4.8.4"
   }
 }
