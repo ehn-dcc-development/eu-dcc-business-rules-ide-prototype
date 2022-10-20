@@ -11,14 +11,15 @@ export const defaultSpecification: Specification = {
     ruleTestsById: {}
 }
 
+export type RuleTestDetails = {
+    name?: string
+    payload: object
+    external: object
+    expected: boolean
+}
 
 export type RuleTest = {
     id: string
-    details: {
-        name?: string
-        payload: object
-        external: object
-        expected: boolean
-    }
+    details: RuleTestDetails
 }
 

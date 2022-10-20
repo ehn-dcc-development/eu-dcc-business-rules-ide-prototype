@@ -13,6 +13,11 @@ initializeFromStorage()
 const {specification} = ideState
 if (specification !== undefined && specification.ruleTestsById === undefined) {
     specification.ruleTestsById = {}
+    specification.rules.forEach(({Identifier}) => {
+        if (!(Identifier in specification.ruleTestsById)) {
+            specification.ruleTestsById[Identifier] = []
+        }
+    })
 }
 
 const container = document.getElementById("ide")

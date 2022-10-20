@@ -2,8 +2,11 @@ import React from "react"
 import {observer} from "mobx-react"
 import {parseRuleId, Rule} from "dcc-business-rules-utils"
 
-import {Specification} from "./type-defs"
+import {runTests, ResultClassification} from "../spec/rule-test"
+import {RuleTest, Specification} from "../spec/type-defs"
+import {asClassName} from "../utils/css"
 import {groupBy, Hash} from "../utils/functional"
+import {sortByStringKey} from "../utils/sorting"
 import {flagEmoji} from "../utils/string"
 
 
@@ -15,7 +18,7 @@ export type OutlineProps = {
 
 export const Outline = observer(({specification, selectedRule, selectRule}: OutlineProps) => {
     const rulesPerType = groupBy(
-        specification.rules,    // TODO  sort on (ID, version)
+        sortByStringKey(specification.rules, ({Identifier, Version}) => `${Identifier} ${Version}`),
         (rule) => rule.Type
     )
 
@@ -30,7 +33,10 @@ export const Outline = observer(({specification, selectedRule, selectRule}: Outl
                         }}
                         key={index}
                     >
-                        <RuleLine rule={rule} />
+                        <RuleLine
+                            rule={rule}
+                            tests={specification.ruleTestsById[rule.Identifier] || []}
+                        />
                     </div>
                 )
             }
@@ -55,15 +61,17 @@ const certificateType2emoji: Hash<string> = {
 
 export type RuleLineProps = {
     rule: Rule
+    tests: RuleTest[]
 }
 
-export const RuleLine = observer(({rule}: RuleLineProps) => {
+export const RuleLine = observer(({rule, tests}: RuleLineProps) => {
     const {country, type} = parseRuleId(rule.Identifier)
+    const result = runTests(rule, tests)
     return <div className="rule-line">
         <span className="symbols">{certificateType2emoji[type]} {flagEmoji(country)}</span>
         <span className="identifier">{rule.Identifier}&nbsp;</span>
         <span className="version">{rule.Version}</span>
-        <span className="test-result">xxx</span>
+        <span className={asClassName("test-result", ResultClassification[result])}>&nbsp;</span>
     </div>
 })
 

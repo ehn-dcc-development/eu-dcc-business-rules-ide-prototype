@@ -55,5 +55,19 @@ span.tt {
 span.test-result {
     float: right;
     margin-right: 0.25rem;
+    width: 2em;
+}
+
+.test-result.success {
+    background-color: lightgreen;
+}
+.test-result.failure {
+    background-color: red;
+}
+.test-result.error {
+    background-color: darkred;
+}
+.test-result.noTests {
+    background-color: lightskyblue;
 }
 

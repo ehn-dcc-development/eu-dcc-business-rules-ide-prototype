@@ -5,11 +5,11 @@ import {CompactExprRendering} from "certlogic-html"
 import {Rule} from "dcc-business-rules-utils"
 
 import {RuleLine} from "./outline"
-import {RuleTest} from "./type-defs"
-import {ideState, storeSpec} from "../app/state"
+import {RuleTestComponent} from "./rule-test"
+import {ideState, storeSpec} from "./state"
+import {RuleTest} from "../spec/type-defs"
 import {fileUploader, withoutFileExtension} from "../utils/file"
 import {parseJson} from "../utils/json"
-import {evaluateExprAgainst} from "../utils/logic"
 
 
 require("certlogic-html/dist/styling.css")
@@ -17,15 +17,14 @@ require("certlogic-html/dist/styling.css")
 
 export type RuleComponentProps = {
     rule: Rule
+    tests: RuleTest[]
 }
 
-export const RuleComponent = observer(({rule}: RuleComponentProps) => {
-    const {ruleTestsById} = ideState.specification!
-
+export const RuleComponent = observer(({rule, tests}: RuleComponentProps) => {
     return <div className="rule">
         <div>
             <span>identification:&nbsp;</span>
-            <RuleLine rule={rule} />
+            <RuleLine rule={rule} tests={tests} />
         </div>
         <div>
             <span>{`valid: ${rule.ValidFrom} - ${rule.ValidTo}`}</span>
@@ -70,11 +69,7 @@ export const RuleComponent = observer(({rule}: RuleComponentProps) => {
             <input
                 id="import-rule-test-file-upload" type="file" accept=".json" multiple
                 onChange={action(fileUploader((files) => {
-                    let ruleTests = ruleTestsById[rule.Identifier]
-                    if (ruleTests === undefined) {
-                        ruleTestsById[rule.Identifier] = ruleTests = []
-                    }
-                    ruleTests.push(...files.map(({name, contents}) => ({
+                    tests.push(...files.map(({name, contents}) => ({
                         id: withoutFileExtension(name),
                         details: parseJson(contents)
                             // TODO  verify cast
@@ -88,32 +83,21 @@ export const RuleComponent = observer(({rule}: RuleComponentProps) => {
             <tr>
                 <th>id</th>
                 <th>name</th>
-                <th>expected</th>
-                <th>actual</th>
+                {/*<th>expected</th>*/}
+                {/*<th>actual</th>*/}
             </tr>
             </thead>
             <tbody>
-            {(ruleTestsById[rule.Identifier] || []).map(({id, details}, index) => {
-                const {name, payload, external, expected} = details
-                const [actual, erroredOut] = evaluateExprAgainst(rule.Logic, { payload, external })
-                const matches = !erroredOut && actual === expected
-                const backgroundColor = erroredOut
-                    ? "darkred"
-                    : (matches ? "lightgreen" : "red")
-                return <tr key={index} style={{ backgroundColor }}>
-                    <td>{id}</td>
-                    <td>{name}</td>
-                    <td><span className="tt">{"" + expected}</span></td>
-                    <td>{erroredOut ? `error` : <span className="tt">{"" + actual}</span>}</td>
-                </tr>
-            })}
+            {tests.map((test, index) =>
+                <RuleTestComponent rule={rule} test={test} key={index} />
+            )}
             </tbody>
         </table>
         <div>
-            <button onClick={() => {
-                ruleTestsById[rule.Identifier] = []
+            <button onClick={action(() => {
+                ideState.specification!.ruleTestsById[rule.Identifier] = []
                 storeSpec()
-            }}>Remove</button>
+            })}>Remove</button>
             <span>&nbsp;all tests</span>
         </div>
 

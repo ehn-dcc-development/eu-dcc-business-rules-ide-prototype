@@ -4,8 +4,8 @@ import {action} from "mobx"
 import {observer} from "mobx-react"
 
 import {IDEState, storeSpec} from "./state"
-import {Outline} from "../spec/outline"
-import {RuleComponent} from "../spec/rule"
+import {Outline} from "./outline"
+import {RuleComponent} from "./rule"
 import {defaultSpecification, Specification} from "../spec/type-defs"
 import {fileUploader, jsonDownloader} from "../utils/file"
 import {parseJson} from "../utils/json"
@@ -79,8 +79,14 @@ export const IDE = observer(({state}: IDEProps) => {
                     <input
                         id="import-rule-file-upload" type="file" accept=".json" multiple
                         onChange={action(fileUploader((files) => {
-                            state.specification!.rules.push(...files.map(({contents}) => parseJson(contents) as Rule))
-                                // TODO  verify cast
+                            files.forEach(({contents}) => {
+                                const newRule = parseJson(contents) as Rule
+                                    // TODO  verify cast
+                                state.specification!.rules.push(newRule)
+                                if (state.specification!.ruleTestsById[newRule.Identifier] === undefined) {
+                                    state.specification!.ruleTestsById[newRule.Identifier] = []
+                                }
+                            })
                             storeSpec()
                         }))}
                     />
@@ -88,13 +94,29 @@ export const IDE = observer(({state}: IDEProps) => {
 
                 <h3>Outline</h3>
 
-                <Outline specification={state.specification} selectedRule={state.selectedRule} selectRule={action((rule) => {
-                    state.selectedRule = rule
-                })} />
+                <Outline
+                    specification={state.specification}
+                    selectedRule={state.selectedRule}
+                    selectRule={action((rule) => {
+                        state.selectedRule = rule
+                    })}
+                />
+
+                <p>Legend of test colors:</p>
+
+                <ul>
+                    <li className="test-result success">success</li>
+                    <li className="test-result failure">failure</li>
+                    <li className="test-result error">error</li>
+                    <li className="test-result noTests">no tests</li>
+                </ul>
 
                 {state.selectedRule && <>
                     <h3>Rule</h3>
-                    <RuleComponent rule={state.selectedRule} />
+                    <RuleComponent
+                        rule={state.selectedRule}
+                        tests={state.specification!.ruleTestsById[state.selectedRule.Identifier]}
+                    />
                 </>}
 
             </>
