@@ -1,0 +1,117 @@
+editor default
+
+
+// scaffolding:
+
+// (no syntax for Model)
+
+Module {[
+module ${name}:
+    ${expressions}
+]}
+
+NamedExpression {
+    [expression ${name} = ${expression}]
+}
+
+
+// literals:
+
+BooleanLiteral {
+    [ ${value} ]
+    trigger = "bool"
+}
+IntegerLiteral {
+    [ ${value} ]
+    trigger = "1"
+}
+StringLiteral {
+    [ ${value} ]
+    trigger = "'"
+}
+
+ArrayExpression {
+// doesn't work:    [ ${items horizontal initiator [\[] terminator [\]]} ]
+    // does work:
+    [ \[ ${items horizontal} \] ]
+    trigger = "["
+}
+
+
+// operations:
+
+DataAccessExpression {
+    [ /${path} ]
+    trigger = "var"
+}
+
+AndExpression {
+    [ ${operands horizontal separator [ and ]} ]
+    trigger = "and"
+}
+
+IfExpression {[
+if
+    ${guard}
+then
+    ${then_}
+else
+    ${else_}
+]
+    trigger = "if"
+}
+
+EqualityExpression {
+    [ ${left} = ${right} ]
+    trigger = "="
+    symbol = "="
+}
+
+//ExtendedComparisonExpression {
+//    [ ${operands} <${operator.operatorSymbol}> ]
+//    trigger = "comp"
+//}
+// TODO  the two kinds of comparisons
+
+InExpression {
+    [ ${left} ∈ ${right} ]
+    trigger = "in"
+    symbol = "∈"
+}
+
+PlusExpression {
+    [ ${left} + ${right} ]
+    trigger = "+"
+    symbol = "+"
+}
+
+NotExpression {
+    [ not ${operand} ]
+    trigger = "!"
+}
+
+PlusTimeExpression {
+    [ ${operand} ⊕ ${amount} ${unit} ]
+}
+
+ReduceExpression {[
+reduce
+    ${operand}
+with (accumulator, current) ->
+    ${lambda}
+starting from
+    ${initial}
+]
+    trigger = "reduce"
+}
+
+ExtractFromUCIExpression {
+    [ extract #${index} from UCI ${operand} ]
+    trigger = "extract UCI"
+}
+
+DCCDateOfBirthExpression {
+    [ DCC-DOB ${operand} ]
+    trigger = "DCC-DOB"
+}
+

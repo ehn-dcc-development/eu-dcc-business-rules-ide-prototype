@@ -1,0 +1,142 @@
+language CertLogic
+
+// scaffolding:
+
+model Expressions {
+    modules: Module[];
+}
+
+modelunit Module {
+    name: identifier;
+    expressions: NamedExpression[];
+    file-extension = "clexprs";
+}
+
+concept NamedExpression {
+    name: identifier;
+    expression: CertLogicExpression;
+}
+
+
+abstract expression CertLogicExpression {}
+
+
+// literals:
+
+abstract expression Literal base CertLogicExpression {
+}
+
+expression BooleanLiteral base Literal {
+    value: boolean;
+}
+
+expression IntegerLiteral base Literal {
+    value: number;
+}
+
+expression StringLiteral base Literal {
+    value: string;
+}
+
+
+expression ArrayExpression base CertLogicExpression {
+    items: CertLogicExpression[];
+}
+
+
+// operations:
+
+abstract expression CertLogicOperation base CertLogicExpression {}
+
+
+expression DataAccessExpression base CertLogicOperation {
+    path: string;
+}
+
+
+expression AndExpression base CertLogicOperation {
+    operands: CertLogicExpression[];
+}
+
+
+expression IfExpression base CertLogicOperation {
+    guard: CertLogicExpression;
+    then_: CertLogicExpression;
+    else_: CertLogicExpression;
+}
+
+
+abstract binary expression BinaryExpression base CertLogicOperation {
+    left: CertLogicExpression;
+    right: CertLogicExpression;
+}
+
+
+binary expression EqualityExpression base BinaryExpression {
+    priority = 5;
+}
+
+
+expression ExtendedComparisonExpression base CertLogicOperation {
+    operator: ComparisonOperator;
+    operands: CertLogicExpression[];
+}
+// TODO  the two kinds of comparisons
+// TODO  is it possible to use limited concepts for coherent sets of binary(/ternary) operators?
+
+
+limited ComparisonOperator {
+    operatorSymbol: string;
+    gt = { operatorSymbol: ">" }
+    lt = { operatorSymbol: "<" }
+    leq = { operatorSymbol: "<=" }
+    geq = { operatorSymbol: ">=" }
+    after = { operatorSymbol: "after" }
+    before = { operatorSymbol: "before" }
+    notAfter = { operatorSymbol: "not-after" }
+    notBefore = { operatorSymbol: "not-before" }
+}
+
+
+binary expression InExpression base BinaryExpression {
+    priority = 2;
+}
+
+binary expression PlusExpression base BinaryExpression {
+    priority = 1;
+}
+
+
+expression NotExpression base CertLogicOperation {
+    operand: CertLogicExpression;
+}
+
+
+limited TimeUnit {
+    year; month; day; hour;
+}
+
+expression PlusTimeExpression base CertLogicOperation {
+    operand: CertLogicExpression;
+    amount: number;
+    unit: TimeUnit;
+}
+
+
+expression ReduceExpression base CertLogicOperation {
+    operand: CertLogicExpression;
+    lambda: CertLogicExpression;
+    initial: CertLogicExpression;
+}
+
+
+expression ExtractFromUCIExpression base CertLogicOperation {
+    operand: CertLogicExpression;
+    index: number;
+}
+
+
+expression DCCDateOfBirthExpression base CertLogicOperation {
+    operand: CertLogicExpression;
+}
+

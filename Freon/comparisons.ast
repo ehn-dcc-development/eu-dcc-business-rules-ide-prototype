@@ -1,0 +1,9 @@
+language CertLogic
+
+
+// generate these definitions:
+
+binary expression LtBinaryComparisonExpression base BinaryExpression {
+    priority = 4;
+}
+

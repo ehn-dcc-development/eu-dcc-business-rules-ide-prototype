@@ -1,0 +1,11 @@
+editor default
+
+
+// generate these definitions:
+
+LtBinaryComparisonExpression {
+    [ ${left} < ${right} ]
+    trigger = "<"
+    symbol = "<"
+}
+

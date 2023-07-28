@@ -23,3 +23,6 @@ export type RuleTest = {
     details: RuleTestDetails
 }
 
+
+// TODO  turn this into classes, with @computed functions, etc.
+
