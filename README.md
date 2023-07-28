@@ -1,5 +1,13 @@
 # README
 
+## IMPORTANT NOTICE
+
+As of July 1st 2023, the EU DCC project has been handed over to the [WHO](https://github.com/WorldHealthOrganization/smart-trust-network-gateway).
+The project has therefore been frozen.
+This repository will be placed into archival mode.
+It will remain available for the foreseeable future - however, it will no longer be actively maintained.
+
+
 ## About
 
 This repository holds a prototype for an IDE for business rules.
